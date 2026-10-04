@@ -44,7 +44,7 @@ function Spinner() {
   }, [])
 
   return (
-    <span aria-hidden className="text-amber-600">
+    <span aria-hidden className="inline-block w-[1ch] text-amber-600">
       {SPINNER_FRAMES[frame]}
     </span>
   )
@@ -103,7 +103,7 @@ function Menu() {
     <div
       inert={!ready}
       className={cn(
-        "grid gap-y-1 text-sm font-normal tracking-tight transition-opacity duration-300",
+        "grid gap-y-1 text-sm font-normal tracking-tight transition-opacity duration-300 md:col-span-2",
         ready ? "opacity-100" : "opacity-0"
       )}
     >
@@ -123,7 +123,7 @@ function Menu() {
             onMouseEnter: () => setSelected(index),
             onFocus: () => setSelected(index),
             className: cn(
-              "flex w-fit gap-[1ch] rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+              "flex w-fit gap-[1ch] rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50 pointer-coarse:py-2",
               isSelected ? "text-foreground" : "text-muted-foreground",
               !option.href && "cursor-not-allowed"
             ),
@@ -162,8 +162,11 @@ function Menu() {
           )
         })}
       </ul>
-      <span className="text-muted-foreground text-xs">
+      <span className="text-muted-foreground text-xs pointer-coarse:hidden">
         ↑/↓ to move · Enter to select · or click
+      </span>
+      <span className="text-muted-foreground hidden text-xs pointer-coarse:inline">
+        Tap to select
       </span>
     </div>
   )
@@ -171,14 +174,15 @@ function Menu() {
 
 export function ComingSoonTerminal() {
   return (
-    <Terminal className="h-auto max-h-none">
-      <TypingAnimation className="min-h-5" duration={40}>
+    // The LGU rows sit two per line from md up; every other row spans both columns.
+    <Terminal className="h-auto max-h-none md:max-w-2xl [&_code]:gap-x-6 md:[&_code]:grid-cols-2 [&_pre]:p-3 [&_pre]:whitespace-pre-wrap sm:[&_pre]:p-4">
+      <TypingAnimation className="min-h-5 md:col-span-2" duration={40}>
         &gt; better-davao-del-sur status
       </TypingAnimation>
 
       {LGUS.map((lgu) => (
         <AnimatedSpan key={lgu} transition={{ duration: 0.15 }}>
-          <span className="flex gap-[1ch]">
+          <span className="flex flex-wrap gap-x-[1ch]">
             <Spinner />
             <span className="w-[11ch]">{lgu}</span>
             <span className="text-muted-foreground">under development</span>
@@ -186,12 +190,15 @@ export function ComingSoonTerminal() {
         </AnimatedSpan>
       ))}
 
-      <AnimatedSpan className="text-blue-600" transition={{ duration: 0.15 }}>
+      <AnimatedSpan
+        className="text-blue-600 md:col-span-2"
+        transition={{ duration: 0.15 }}
+      >
         ℹ 1 city · 9 municipalities
       </AnimatedSpan>
 
       <TypingAnimation
-        className="text-muted-foreground min-h-5"
+        className="text-muted-foreground min-h-5 md:col-span-2"
         duration={30}
       >
         Coming soon. We&apos;re working on it.
