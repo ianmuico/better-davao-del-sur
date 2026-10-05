@@ -12,9 +12,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteName = "Better Davao del Sur";
+const description =
+  "Better Davao del Sur is under development. Coming soon for Digos City and the nine municipalities of Davao del Sur.";
+
 export const metadata: Metadata = {
-  title: "Better Davao del Sur",
-  description: "We're working on it.",
+  metadataBase: new URL("https://betterdavaodelsur.org"),
+  title: {
+    default: `${siteName}: under development`,
+    template: `%s | ${siteName}`,
+  },
+  description,
+  applicationName: siteName,
+  openGraph: {
+    type: "website",
+    siteName,
+    title: `${siteName}: under development`,
+    description,
+    locale: "en_PH",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteName}: under development`,
+    description,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
