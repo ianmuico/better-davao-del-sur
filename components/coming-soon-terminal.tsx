@@ -26,7 +26,7 @@ const LGUS = [
 
 const OPTIONS = [
   { label: "Visit BetterGov.ph", href: "https://bettergov.ph/" },
-  { label: "Join Discord", note: "coming soon" },
+  { label: "Join Discord", href: "https://discord.gg/BhagrHCHw" },
 ]
 
 const SPINNER_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
@@ -59,7 +59,7 @@ function Menu() {
     (sequence.sequenceStarted && sequence.activeIndex >= itemIndex)
 
   const [selected, setSelected] = useState(0)
-  const itemRefs = useRef<(HTMLElement | null)[]>([])
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
 
   useEffect(() => {
     if (!ready) return
@@ -67,7 +67,9 @@ function Menu() {
     const move = (step: number) => {
       const next = (selected + step + OPTIONS.length) % OPTIONS.length
       // Keep keyboard focus on the highlighted row if it is already in the menu.
-      if (itemRefs.current.includes(document.activeElement as HTMLElement)) {
+      if (
+        itemRefs.current.includes(document.activeElement as HTMLAnchorElement)
+      ) {
         itemRefs.current[next]?.focus()
       }
       setSelected(next)
@@ -116,48 +118,35 @@ function Menu() {
       <ul className="grid gap-y-1">
         {OPTIONS.map((option, index) => {
           const isSelected = index === selected
-          const itemProps = {
-            ref: (element: HTMLElement | null) => {
-              itemRefs.current[index] = element
-            },
-            onMouseEnter: () => setSelected(index),
-            onFocus: () => setSelected(index),
-            className: cn(
-              "flex w-fit gap-[1ch] rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50 pointer-coarse:py-2",
-              isSelected ? "text-foreground" : "text-muted-foreground",
-              !option.href && "cursor-not-allowed"
-            ),
-          }
-          const content = (
-            <>
-              <span aria-hidden className="inline-block w-[1ch] text-blue-600">
-                {isSelected && "❯"}
-              </span>
-              <span className={cn(isSelected && "underline underline-offset-4")}>
-                {option.label}
-              </span>
-              {option.note && (
-                <span className="text-muted-foreground">({option.note})</span>
-              )}
-            </>
-          )
 
           return (
             <li key={option.label}>
-              {option.href ? (
-                <a
-                  {...itemProps}
-                  href={option.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <a
+                ref={(element) => {
+                  itemRefs.current[index] = element
+                }}
+                href={option.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onMouseEnter={() => setSelected(index)}
+                onFocus={() => setSelected(index)}
+                className={cn(
+                  "flex w-fit gap-[1ch] rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50 pointer-coarse:py-2",
+                  isSelected ? "text-foreground" : "text-muted-foreground"
+                )}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block w-[1ch] text-blue-600"
                 >
-                  {content}
-                </a>
-              ) : (
-                <button {...itemProps} type="button" aria-disabled="true">
-                  {content}
-                </button>
-              )}
+                  {isSelected && "❯"}
+                </span>
+                <span
+                  className={cn(isSelected && "underline underline-offset-4")}
+                >
+                  {option.label}
+                </span>
+              </a>
             </li>
           )
         })}
